@@ -1,0 +1,100 @@
+1. Create nginx controller
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/baremetal/deploy.yaml
+
+add hostNetwork: true in pod sepc
+
+2.  Create Deployment1
+kubectl create deployment web --image=gcr.io/google-samples/hello-app:1.0
+
+Expose the Deployment:
+
+kubectl expose deployment web --type=NodePort --port=8080
+
+Verify the Service is created and is available on a node port:
+
+kubectl get service web
+Output:
+
+NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+web       NodePort   10.104.133.249   <none>        8080:31637/TCP   12m
+Visit the service via NodePort:
+Output:
+
+http://172.17.0.15:31637
+
+3. Create Ingress resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hello-world.info
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 8080
+          - path: /v2
+            pathType: Prefix
+            backend:
+              service:
+                name: web2
+                port:
+                  number: 8080
+                  
+  kubectl apply -f example-ingress.yaml
+  
+ Add the following line to the bottom of the /etc/hosts file.
+
+172.17.0.15 hello-world.info
+                  
+Edit Ingress
+Edit the existing example-ingress.yaml and add the following lines:
+
+      - path: /v2
+        pathType: Prefix
+        backend:
+          service:
+            name: web2
+            port:
+              number: 8080
+Apply the changes:
+
+kubectl apply -f example-ingress.yaml
+
+4.  Create a v2 Deployment using the following command:
+
+kubectl create deployment web2 --image=gcr.io/google-samples/hello-app:2.0
+Output:
+
+deployment.apps/web2 created
+Expose the Deployment:
+
+kubectl expose deployment web2 --port=8080 --type=NodePort
+
+5. Test Your Ingress
+Access the 1st version of the Hello World app.
+
+curl hello-world.info
+Output:
+
+Hello, world!
+Version: 1.0.0
+Hostname: web-55b8c6998d-8k564
+Access the 2nd version of the Hello World app.
+
+curl hello-world.info/v2
+Output:
+
+Hello, world!
+Version: 2.0.0
+Hostname: web2-75cd47646f-t8cjk
+
+More info # https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
