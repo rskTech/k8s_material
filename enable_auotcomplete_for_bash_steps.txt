@@ -1,0 +1,13 @@
+kubectl completion bash
+apt-get install bash-completion
+kubectl completion bash > ~/autocomplete.sh
+source ~/autocomplete.sh
+echo 'source <(kubectl completion bash)' >>~/.bashrc
+kubectl completion bash >/etc/bash_completion.d/kubectl
+echo 'alias k=kubectl' >>~/.bashrc
+echo 'complete -F __start_kubectl k' >>~/.bashrc
+
+
+
+
+#Link  : https://kubernetes.io/docs/tasks/tools/install-kubectl/
