@@ -1,4 +1,4 @@
-# There are kinds of users that need access to a Kubernetes cluster
+# There are three kinds of users that need access to a Kubernetes cluster
 ### 1. Developers/Admins
 ####   Users that are responsible to do administrative or developmental tasks on the cluster. This includes operations like upgrading the cluster or creating the resources/workloads on the cluster
 
