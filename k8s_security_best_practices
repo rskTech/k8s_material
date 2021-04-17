@@ -1,0 +1,37 @@
+Kubernetes Security Best Practices: Build Phase
+
+  Use minimal base images - avoid using minimal images without package managers
+  Don’t add unnecessary components - example curl
+  Use up-to-date images only - Ensure your images are up to date and utilizing the latest versions of their components.
+  Use an image scanner to identify known vulnerabilities
+  Integrate security into your CI/CD pipeline - Make image scanning and other security checks part of your CI/CD pipeline to automate security and fail CI builds and generate alerts when your scanner detects high-severity fixable vulnerabilities.
+  Implement defense-in-depth - When a security issue is discovered in a container image, make sure you have policy checks and a remediation workflow in place to detect and update those images.
+  Use namespaces to isolate sensitive workloads
+  Use Kubernetes network policies to control traffic between pods and clusters
+  Prevent overly permissive access to secrets - make sure deployments mount only the secrets they actually require to prevent unnecessary exposure.
+  Assess the privileges used by containers
+  Extend your image scanning to deploy phase
+  Use labels and annotations appropriately
+  Enable Kubernetes role-based access control (RBAC)
+  
+
+
+
+Kubernetes Security Best Practices: Deploy Phase
+  What is being deployed
+  Where it is going to be deployed - which clusters, namespaces, and nodes
+  How it is deployed - whether it runs privileged, what other deployments it can communicate with, the pod security context that is applied, if any
+  What it can access - including secrets, volumes, and other infrastructure components such as the host or orchestrator API
+  Is it compliant - whether it complies with your policies and security requirements
+  
+  
+ Kubernetes Security Best Practices: Runtime Phase
+    Extend vulnerability scanning to running deployments
+    Use Kubernetes built-in controls when available to tighten security
+    Monitor network traffic to limit unnecessary or insecure communication
+    
+ Infrastructure Security
+     Update your Kubernetes to the latest version whenever possible
+     Securely configure the Kubernetes API server
+     Secure etcd
+     Secure the kubelet
