@@ -1,0 +1,27 @@
+95 . 1. Create a docker volume Run registry server and bind it docker volume
+
+docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v /mnt/registry:/var/lib/registry \
+  registry:2
+
+     2.Push any image to the local registry and paste the output here
+Stop and remove the registry and paste the output of the command docker ps
+Launch local registry again but with the same volume you had created earlier
+Pull the image that was pushed a while back and paste the output here
+
+docker pull ubuntu:16.04
+docker tag ubuntu:16.04 localhost:5000/my-ubuntu
+docker push localhost:5000/my-ubuntu
+docker container stop registry && docker container rm -v registry
+docker rm -f 9f8c11f0893b
+docker rmi -f 1fd8e1b0bb7e
+docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v /mnt/registry:/var/lib/registry \
+  registry:2
+  docker pull localhost:5000/my-ubuntu
