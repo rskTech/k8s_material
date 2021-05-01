@@ -3,6 +3,9 @@ K8 CKA exam preparation tips
 
 Set alias
 alias k='kubectl'
+alias kubecns='kubectl config view | grep namespace:' #to display current namespace#
+alias kubens='kubectl config set-context --current --namespace ' #to switch namespace#
+
 
 Set bash autocompletion
 
