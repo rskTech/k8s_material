@@ -1,0 +1,65 @@
+=============================================
+K8 CKA exam preparation tips
+
+Set alias
+alias k='kubectl'
+alias kubecns='kubectl config view | grep namespace:' #to display current namespace#
+alias kubens='kubectl config set-context --current --namespace ' #to switch namespace#
+
+
+Set bash autocompletion
+
+Use kubectl describe command
+
+K create Nginx --image=nginx --dry-run=client -o yaml > pod.yaml
+
+Practice frequently used commands
+
+Familiarize with vim editor: Vim Crash Course | How to edit files quickly in CKAD / CKA exam
+
+
+
+
+
+Take mock test and try time management
+
+https://kubewiz.com/signin
+
+Setup vim editor for yaml
+How to Setup your vim editor for YAML, Ansible Playbook, Kubernetes
+============================
+https://youtu.be/XnWzbveEdHE
+https://yamllint.readthedocs.io/en/stable/text_editors.html
+steps to install yaml lint plugin
+=================================
+mkdir -p ~/.vim/pack/git-plugins/start
+git clone --depth 1 https://github.com/w0rp/ale.git ~/.vim/pack/git-plugins/start/ale
+pip install —user yamllint
+follow the instructions in below web link
+https://www.arthurkoziel.com/setting-up-vim-for-yaml/
+Add following to your ~/.vimrc file
+
+
+=====================================
+Syntax coloring and functions for YAML
+=======================================
+download yaml.vim from git repo
+Save the file in ~/.vim/yaml.vim
+Add the following line to your ~/.vimrc
+ au BufNewFile,BufRead *.yaml,*.yml so ~/.vim/yaml.vim
+===========================
+set line number
+in ~/.vimrc file
+set number
+
+Exam Preparation Tips
+https://youtu.be/TJSAcwUP0pE
+
+CKAD& CKA Exam Syllabus
+https://github.com/cncf/curriculum/blob/master/CKAD_Curriculum_V1.20.pdf
+
+CKAD Mock exam video
+https://youtu.be/1ZjAUQi18AA
+
+===========================================
+
