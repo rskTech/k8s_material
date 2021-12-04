@@ -65,3 +65,7 @@ ETCDCTL_API=3 etcdctl get cluster.name \
 > --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \ 
 > --cert=/home/cloud_user/etcd-certs/etcd-server.crt \ 
 > --key=/home/cloud_user/etcd-certs/etcd-server.key cluster.name beebox
+
+
+
+# https://k21academy.com/docker-kubernetes/cka-day-9-live-session-review/
