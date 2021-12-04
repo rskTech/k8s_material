@@ -1,0 +1,95 @@
+Upgrade Kubernetes Cluster [Master & Worker Nodes]
+To upgrade a Kubernetes cluster is very important to keep up with the latest security features and bug fixes, as well as benefit from new features being released
+on an ongoing basis. This is especially important when we have installed a really outdated version or if we want to automate the process and always be on top of 
+the latest supported version.
+
+Here, we demonstrate Draining & Uncordoning by upgrading the kubeadm, kubectl & kubelet on the Control Plane node & Worker node in our Kubernetes set up one by one:
+
+Control Plane Upgrade Steps:
+a) Upgrade kubeadm on the Control Plane node
+b) Drain the Control Plane node
+c) Plan the upgrade (kubeadm upgrade plan)
+d) Apply the upgrade (kubeadm upgrade apply)
+e) Upgrade kubelet & kubectl on the control Plane node
+f) Uncordon the Control Plane node
+
+Worker Node Upgrade Steps:
+a) Drain the node
+b) Upgrade kubeadm on the node
+c) Upgrade the kubelet configuration (kubeadm upgrade node)
+d) Upgrade kubelet & kubectl
+e) Uncordon the node
+
+Starting with the Control node, the following is the configuration:
+1) Upgrade kubeadm
+
+sudo apt-get update && \
+> sudo apt-get install -y — allow-change-held-packages kubelet=1.20.2–00 kubectl=1.20.2–00
+
+
+Kubeadm version for the Control node is shown as ‘v1.20.2’, but it is not applied yet. The output of ‘kubectl get nodes’ clearly shows that the version is
+still ‘v1.20.1’
+2) Drain the Control node
+
+kubectl drain k8s-control --ignore-daemonsets
+
+3) Plan the upgrade
+
+sudo kubeadm upgrade plan v1.20.2
+
+
+4) Apply the upgrade
+
+sudo kubeadm upgrade apply v1.20.2
+
+
+The Cluster is upgraded to v1.20.2
+5) Upgrade kubelet & kubectl
+
+sudo apt-get install -y --allow-change-held-packages kubelet=1.20.2-00 kubectl=1.20.2-00
+
+6) Uncordon the node
+Note: It may be possible that the upgrade may change the kubelet unit file, so daemon-reload is executed in order that systemctl sees the new kubelet unit file.
+Next restart the kubelet
+
+sudo systemctl daemon-reload 
+sudo systemctl restart kubelet 
+kubectl uncordon k8s-control
+
+Finally, the latest version of the components of the Control node can be checked on executing ‘kubectl get nodes’:
+
+
+Steps for the Worker node:
+
+1) Drain the Worker node (from the Control node console)
+
+kubectl drain k8s-worker1 --ignore-daemonsets --force
+
+2) Upgrade kubeadm
+
+sudo apt-get update && \
+> sudo apt-get install -y --allow-change-held-packages kubeadm=1.20.2-00
+
+
+
+Version on which kubeadm will be upgraded: ‘kubeadm version’
+3) Upgrade the kubelet configuration
+
+sudo kubeadm upgrade node
+
+4) Upgrade kubelet & kubectl
+
+sudo apt-get update && \
+> sudo apt-get install -y --allow-change-held-packages kubelet=1.20.2-00 kubectl=1.20.2-00
+
+5) Restart kubelet & Uncordon the Worker node
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+6) Uncordon the Worker node (from the control node console)
+
+kubectl uncordon k8s-worker1
+
+Till this point, our Kubernetes setup has a Control plane node & Worker node-1 in an upgraded and functional state. The same set of steps will be followed
+for Worker node-2 to have it in the upgraded state.
