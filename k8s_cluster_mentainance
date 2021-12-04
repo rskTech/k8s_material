@@ -93,3 +93,5 @@ kubectl uncordon k8s-worker1
 
 Till this point, our Kubernetes setup has a Control plane node & Worker node-1 in an upgraded and functional state. The same set of steps will be followed
 for Worker node-2 to have it in the upgraded state.
+
+# https://k21academy.com/docker-kubernetes/cka-day-9-live-session-review/
