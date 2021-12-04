@@ -1,0 +1,67 @@
+Backup And Restore Etcd In Kubernetes
+
+Etcd is a consistent and highly available key-value store used as Kubernetes’ backing store for all cluster data. If your Kubernetes cluster uses etcd as its backing
+store, make sure you have a backup plan for those data. All Kubernetes objects are stored on etcd. Periodically backing up the etcd cluster data is important to 
+recover Kubernetes clusters under disaster scenarios, such as losing all control plane nodes. The snapshot file contains all the Kubernetes states and critical 
+information. In order to keep the sensitive Kubernetes data safe, encrypt the snapshot files.
+
+Backing up your Kubernetes cluster data by backing up etcd is of crucial importance. etcd is the backend storage solution for the deployed Kubernetes cluster. 
+All the K8s objects, applications & configurations are stored in etcd.
+
+Backing up ‘etcd’ data is done using etcd command-line tool: etcdctl
+
+ETCDCTL_API=3 etcdctl --endpoints $ENDPOINT snapshot save <filename>
+
+Restoring etcd can be done from a backup using the etcdctl snapshot restore command:
+
+ETCDCTL_API=3 etcdctl snapshot restore <filename>
+
+
+The steps are as follows:
+
+1) Execute the etcdctl command to check the Cluster name. Lookup for the cluster.name in the etcd cluster:
+
+ETCDCTL_API=3 etcdctl get cluster.name \ 
+> --endpoints=https://10.0.1.101:2379 \ 
+> --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \ 
+> --cert=/home/cloud_user/etcd-certs/etcd-server.crt \ 
+> --key=/home/cloud_user/etcd-certs/etcd-server.key
+
+The returned value for the Cluster.name is beebox
+What does each mean:
+
+endpoint -> instructing etcdctl how to reach out to etcd serve
+cacert -> public certificate for certificate authority
+cert -> the client certificate
+key -> certificate key
+
+2) Snapshot save will save the backup with the name supplied as an argument:
+
+ETCDCTL_API=3 etcdctl snapshot save /home/cloud_user/etcd_backup.db \ 
+> --endpoints=https://10.0.1.101:2379 \ 
+> --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \ 
+> --cert=/home/cloud_user/etcd-certs/etcd-server.crt \ 
+> --key=/home/cloud_user/etcd-certs/etcd-server.key
+
+3) Now, stop etcd, Delete etcd data dir. Reset etcd by removing all the existing etcd data:
+
+
+4) Snapshot restore on the etcd data will restore the data back as a temporary etcd cluster. This command will spinup a temp etcd cluster, saving the data from the 
+backup file to a new data dir in the same location where the previous data dir was:
+
+sudo ETCDCTL_API=3 etcdctl snapshot restore /home/cloud_user/etcd_backup.db \ 
+> --initial-cluster etcd-restore=https://10.0.1.101:2380 \ 
+> --initial-advertise-peer-urls https://10.0.1.101:2380 \ 
+> --name etcd-restore \ > --data-dir /var/lib/etcd
+
+5) Since I executed the operation as Root, I will have to make etcd as the user. Set ownership on the new directory & start etcd:
+
+sudo chown -R etcd:etcd /var/lib/etcd 
+sudo systemctl start etcd
+6) Verify the restored data by looking up the value for the key cluster.name again:
+
+ETCDCTL_API=3 etcdctl get cluster.name \ 
+> --endpoints=https://10.0.1.101:2379 \ 
+> --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \ 
+> --cert=/home/cloud_user/etcd-certs/etcd-server.crt \ 
+> --key=/home/cloud_user/etcd-certs/etcd-server.key cluster.name beebox
