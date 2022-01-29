@@ -27,3 +27,8 @@ nodes:
 ============create kind cluster============
 
 kind create cluster --config configfile
+
+If nodes are in NotReady state do below steps
+sudo sysctl net/netfilter/nf_conntrack_max=131072
+kind delete cluster
+kind create cluster --config configfile
