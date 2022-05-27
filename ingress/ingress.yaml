@@ -1,20 +1,26 @@
-apiVersion: "networking.k8s.io/v1beta1"
-kind: "Ingress"
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: "example-ingress"
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: nginx
   rules:
-  - host: "hello-world.info"
-    http:
-      paths:
-      - path: "/v1"
-        pathType: "Prefix"
-        backend:
-          serviceName: "web"
-          servicePort: 8080
-      - path: "/v2"
-        pathType: "Prefix"
-        backend:
-          serviceName: "web2"
-          servicePort: 8080
+    - host: hello-world.info
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 8080
+          - path: /v2
+            pathType: Prefix
+            backend:
+              service:
+                name: web2
+                port:
+                  number: 8080
