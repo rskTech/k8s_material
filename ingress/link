@@ -1,1 +1,55 @@
-https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
+kind: Pod
+apiVersion: v1
+metadata:
+  name: foo-app
+  labels:
+    app: foo
+spec:
+  containers:
+  - name: foo-app
+    image: hashicorp/http-echo:0.2.3
+    args:
+    - "-text=foo"
+
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: foo-service
+spec:
+  type: NodePort
+  selector:
+    app: foo
+  ports:
+  # Default port used by the image
+  - port: 5678
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bar-app
+  labels:
+    app: bar
+spec:
+  containers:
+  - name: bar-app
+    image: hashicorp/http-echo:0.2.3
+    args:
+    - "-text=bar"
+
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bar-service
+spec:
+  type: NodePort
+  selector:
+    app: bar
+  ports:
+  # Default port used by the image
+  - port: 5678
