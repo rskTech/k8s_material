@@ -1,0 +1,34 @@
+1. create the certificate
+openssl genrsa -out john.key 2048
+
+2. create csr requests for thsi certs
+openssl req -new -key john.key -out john.csr -subj "/CN=john/O=examplegroup"
+
+3. Sign csr with CA certs
+openssl x509 -req -in john.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key  -CAcreateserial -out john.crt
+
+4. Update john certs in config file
+k config set-credintials john --client-certificate=/root/john.crt --client-key=/root/john.key 
+
+5. Create context for new user
+k config set-context mycontext --user=john --cluster=kubernetes
+
+6. Create role
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+        name: myrole
+        namespace: default
+rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["list", "watch", "get"]
+      
+7. Create role binding
+k create rolebinding myrolebinding --role=myrole --user=john
+
+8. Switch the context that we created for new user and validate
+k config use-context mycontext
+
+k get pods
