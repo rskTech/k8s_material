@@ -8,7 +8,7 @@ openssl req -new -key john.key -out john.csr -subj "/CN=john/O=examplegroup"
 openssl x509 -req -in john.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key  -CAcreateserial -out john.crt
 
 4. Update john certs in config file
-k config set-credintials john --client-certificate=/root/john.crt --client-key=/root/john.key 
+k config set-credentials john --client-certificate=/root/john.crt --client-key=/root/john.key 
 
 5. Create context for new user
 k config set-context mycontext --user=john --cluster=kubernetes
