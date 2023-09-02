@@ -49,23 +49,10 @@ ETCDCTL_API=3 etcdctl snapshot save /home/cloud_user/etcd_backup.db \
 4) Snapshot restore on the etcd data will restore the data back as a temporary etcd cluster. This command will spinup a temp etcd cluster, saving the data from the 
 backup file to a new data dir in the same location where the previous data dir was:
 
-sudo ETCDCTL_API=3 etcdctl snapshot restore /home/cloud_user/etcd_backup.db \ 
-> --initial-cluster etcd-restore=https://10.0.1.101:2380 \ 
-> --initial-advertise-peer-urls https://10.0.1.101:2380 \ 
-> --name etcd-restore \ > --data-dir /var/lib/etcd
+ETCDCTL_API=3 etcdctl --data-dir=/home/labsuser --endpoints=https://172.31.15.140:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key  snapshot restore etcd_backup.db
 
-5) Since I executed the operation as Root, I will have to make etcd as the user. Set ownership on the new directory & start etcd:
-
-sudo chown -R etcd:etcd /var/lib/etcd 
-sudo systemctl start etcd
-6) Verify the restored data by looking up the value for the key cluster.name again:
-
-ETCDCTL_API=3 etcdctl get cluster.name \ 
-> --endpoints=https://10.0.1.101:2379 \ 
-> --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \ 
-> --cert=/home/cloud_user/etcd-certs/etcd-server.crt \ 
-> --key=/home/cloud_user/etcd-certs/etcd-server.key cluster.name beebox
+5) update hostPath in etcd.yaml with data dir i.e /home/labsuser
 
 
 
-# https://k21academy.com/docker-kubernetes/cka-day-9-live-session-review/
+# https://medium.com/@mehmetodabashi/backup-and-restore-etcd-cluster-on-kubernetes-93c19b1c070
